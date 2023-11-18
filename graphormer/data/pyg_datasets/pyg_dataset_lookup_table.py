@@ -35,6 +35,7 @@ class MyQM9(QM9):
         if dist.is_initialized():
             dist.barrier()
 
+
 class MyZINC(ZINC):
     def download(self):
         if not dist.is_initialized() or dist.get_rank() == 0:
@@ -62,6 +63,19 @@ class MyMoleculeNet(MoleculeNet):
         if dist.is_initialized():
             dist.barrier()
 
+
+class MyEntities(Entities):
+    def download(self):
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            super(MyEntities, self).download()
+        if dist.is_initialized():
+            dist.barrier()
+
+    def process(self):
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            super(MyEntities, self).process()
+        if dist.is_initialized():
+            dist.barrier()
 
 
 class PYGDatasetLookupTable:
@@ -98,19 +112,21 @@ class PYGDatasetLookupTable:
                 if name == "name":
                     nm = value
             inner_dataset = MyMoleculeNet(root=root, name=nm)
+        elif name == "mutag":
+            inner_dataset = MyEntities(root=root, name="MUTAG")
         else:
             raise ValueError(f"Unknown dataset name {name} for pyg source.")
         if train_set is not None:
             return GraphormerPYGDataset(
-                    None,
-                    seed,
-                    None,
-                    None,
-                    None,
-                    train_set,
-                    valid_set,
-                    test_set,
-                )
+                None,
+                seed,
+                None,
+                None,
+                None,
+                train_set,
+                valid_set,
+                test_set,
+            )
         else:
             return (
                 None
