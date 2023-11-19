@@ -6,7 +6,7 @@ from torch_geometric.datasets import *
 from torch_geometric.data import Dataset
 from .pyg_dataset import GraphormerPYGDataset
 import torch.distributed as dist
-
+import pdb
 
 class MyQM7b(QM7b):
     def download(self):
@@ -64,7 +64,7 @@ class MyMoleculeNet(MoleculeNet):
             dist.barrier()
 
 
-class MyEntities(Entities):
+class MyEntities(TUDataset):
     def download(self):
         if not dist.is_initialized() or dist.get_rank() == 0:
             super(MyEntities, self).download()
@@ -81,6 +81,7 @@ class MyEntities(Entities):
 class PYGDatasetLookupTable:
     @staticmethod
     def GetPYGDataset(dataset_spec: str, seed: int) -> Optional[Dataset]:
+        #pdb.set_trace()
         split_result = dataset_spec.split(":")
         if len(split_result) == 2:
             name, params = split_result[0], split_result[1]

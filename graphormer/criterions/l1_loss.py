@@ -3,6 +3,7 @@
 
 from fairseq.dataclass.configs import FairseqDataclass
 
+import pdb
 import torch
 import torch.nn as nn
 from fairseq import metrics
@@ -24,7 +25,7 @@ class GraphPredictionL1Loss(FairseqCriterion):
         3) logging outputs to display while training
         """
         sample_size = sample["nsamples"]
-
+        #pdb.set_trace()
         with torch.no_grad():
             natoms = sample["net_input"]["batched_data"]["x"].shape[1]
 

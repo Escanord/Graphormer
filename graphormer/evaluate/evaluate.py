@@ -7,10 +7,11 @@ import ogb
 import sys
 import os
 from pathlib import Path
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, accuracy_score
 
 import sys
 from os import path
+import pdb
 
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 from pretrain import load_pretrained_model
@@ -101,6 +102,10 @@ def eval(args, use_pretrained, checkpoint_path=None, logger=None):
         elif args.metric == "mae":
             mae = np.mean(np.abs(y_true - y_pred))
             logger.info(f"mae: {mae}")
+        elif args.metric == "acc":
+            #pdb.set_trace()
+            acc = accuracy_score(y_true, y_pred.round())
+            logger.info(f"acc: {acc}")
         else:
             raise ValueError(f"Unsupported metric {args.metric}")
 

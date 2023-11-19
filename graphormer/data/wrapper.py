@@ -12,6 +12,7 @@ import torch.distributed as dist
 
 pyximport.install(setup_args={"include_dirs": np.get_include()})
 from . import algos
+import pdb
 
 
 @torch.jit.script
@@ -23,9 +24,10 @@ def convert_to_single_emb(x, offset: int = 512):
 
 
 def preprocess_item(item):
-    edge_attr, edge_index, x = item.edge_attr, item.edge_index, item.x
+    #pdb.set_trace()
+    edge_attr, edge_index, x = item.edge_attr.long(), item.edge_index, item.x
     N = x.size(0)
-    x = convert_to_single_emb(x)
+    x = convert_to_single_emb(x).long()
 
     # node adj matrix [N, N] bool
     adj = torch.zeros([N, N], dtype=torch.bool)

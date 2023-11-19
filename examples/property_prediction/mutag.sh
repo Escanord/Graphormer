@@ -6,8 +6,8 @@ CUDA_VISIBLE_DEVICES=0 fairseq-train \
 --user-dir ../../graphormer \
 --num-workers 16 \
 --ddp-backend=legacy_ddp \
---dataset-name mutag \
---dataset-source pyg \
+--dataset-name tu:name=MUTAG \
+--dataset-source dgl \
 --task graph_prediction \
 --criterion l1_loss \
 --arch graphormer_slim \
@@ -16,12 +16,25 @@ CUDA_VISIBLE_DEVICES=0 fairseq-train \
 --optimizer adam --adam-betas '(0.9, 0.999)' --adam-eps 1e-8 --clip-norm 5.0 --weight-decay 0.01 \
 --lr-scheduler polynomial_decay --power 1 --warmup-updates 60000 --total-num-update 400000 \
 --lr 2e-4 --end-learning-rate 1e-9 \
---batch-size 64 \
+--batch-size 128 \
 --fp16 \
 --data-buffer-size 20 \
 --encoder-layers 12 \
 --encoder-embed-dim 80 \
 --encoder-ffn-embed-dim 80 \
 --encoder-attention-heads 8 \
---max-epoch 10000 \
---save-dir ./ckpts
+--max-epoch 20 \
+--save-dir ./examples/property_prediction/ckpts
+
+python graphormer/evaluate/evaluate.py \
+--user-dir ../../graphormer \
+--num-workers 16 \
+--ddp-backend=legacy_ddp \
+--dataset-name tu:name=MUTAG \
+--dataset-source dgl \
+--task graph_prediction \
+--arch graphormer_slim \
+--num-classes 1 \
+--save-dir ./examples/property_prediction/ckpts/ \
+--split test \
+--metric acc
